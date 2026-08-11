@@ -1,0 +1,17 @@
+{
+  "name": "meter-down-immersive",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "devDependencies": {
+    "vite": "latest"
+  },
+  "dependencies": {
+    "@fontsource/yatra-one": "^5.3.0"
+  }
+}

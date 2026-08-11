@@ -1,0 +1,13 @@
+[project]
+name = "meter-down"
+version = "0.2.0"
+description = "Immersive animated field archive for Kolkata's yellow Ambassador taxis"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.30.0",
+  "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "httpx>=0.27.0"]
