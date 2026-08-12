@@ -1,7 +1,40 @@
 const app = document.querySelector('#app');
 const assetBase = `${import.meta.env.BASE_URL}assets/`;
 const heroVideoSrc = `${assetBase}dreamina-2026-08-11-9578-REFERENCE IMAGE_ Use as the exact visua....mp4`;
-const songVideoId = 'YFpxILBZUhg';
+const tracks = [
+  // § 1 — Classic Soul of Calcutta
+  { videoId: 'eygaFCOGxCY', title: 'Coffee Houser Sei Addata', artist: 'Manna Dey' },
+  { videoId: 'by_XxT68yb0', title: 'Ami Je Ke Tomar', artist: 'Kishore Kumar' },
+  { videoId: 'YFpxILBZUhg', title: 'Ei Poth Jodi Na Shesh Hoy', artist: 'Hemanta Mukherjee & Sandhya Mukherjee' },
+  { videoId: 'cUBxx0V9R_k', title: 'Muchhe Jaoa Dinguli', artist: 'Hemanta Mukherjee' },
+  { videoId: 'ZCjH6-44tRo', title: 'Purano Sei Diner Kotha', artist: 'Saswati Sen' },
+  { videoId: 'VaxT-5zDcuk', title: 'Tui Phele Esechhis Kare', artist: 'Hemanta Mukhopadhyay' },
+  { videoId: 'Qk5j8gF74mc', title: 'Amar Ar Hobe Na Deri', artist: 'Hemanta Mukhopadhyay' },
+  { videoId: 'YmIhZCNXfJE', title: 'Kolkata', artist: 'Anupam Roy & Shreya Ghoshal' },
+
+  // § 2 — Monsoon & Modern Indie
+  { videoId: 'vYsfSlEBh5Y', title: 'Amake Amar Moto Thakte Dao', artist: 'Anupam Roy' },
+  { videoId: 'SkvlY11xHeE', title: 'Ekhon Onek Raat', artist: 'Anupam Roy' },
+  { videoId: 'wMpRQDek2ag', title: 'Jawl Phoring', artist: 'Silajit Majumder' },
+  { videoId: '_B22nO_9s7U', title: 'Tomar Shawhore', artist: 'Anjan Dutt' },
+  { videoId: 'stKRz6hTqZY', title: 'Kolkata (Lyrical)', artist: 'Anupam Roy & Shreya Ghoshal' },
+
+  // § 3 — Late-Night Neon Drive (Bollywood Retro)
+  { videoId: 'qOkE3ekdaco', title: 'Ek Pyar Ka Nagma Hai', artist: 'Lata Mangeshkar & Mukesh' },
+  { videoId: 'b1kgB6yIHUw', title: 'Chalte Chalte In Rahon Par', artist: 'Kishore Kumar' },
+  { videoId: 'JQoSSJDZxOo', title: 'Rimjhim Gire Sawan', artist: 'Kishore Kumar' },
+  { videoId: 'xkl1QwNEuYs', title: 'Pyar Hua Ikrar Hua', artist: 'Lata Mangeshkar & Manna Dey' },
+  { videoId: 'cP44iDZZ_wY', title: 'Zindagi Kaisi Hai Paheli', artist: 'Manna Dey' },
+  { videoId: 'g_O5lttb5ww', title: 'Kabhi Kabhie Mere Dil Mein', artist: 'Mukesh' },
+  { videoId: '_w14bUcxl1c', title: 'O Mere Dil Ke Chain', artist: 'Kishore Kumar' },
+  { videoId: '-Px0efU00uQ', title: 'O Mere Dil Ke Chain (Alt)', artist: 'Kishore Kumar' },
+
+  // § 4 — City Escape (Modern Bollywood & Indie)
+  { videoId: 'PGPVZT3Blvs', title: 'Piyu Bole', artist: 'Shreya Ghoshal & Sonu Nigam' },
+  { videoId: 'OF688uk3Il0', title: 'Roobaroo', artist: 'Naresh Iyer & A.R. Rahman' },
+  { videoId: '-3gQ6HIkRys', title: 'Phir Se Ud Chala', artist: 'Mohit Chauhan' },
+  { videoId: '6w67NOaRe-w', title: 'Ilahi', artist: 'Arijit Singh' },
+];
 let youtubePlayer = null;
 let youtubeApiPromise = null;
 
@@ -24,6 +57,7 @@ const state = {
   transition: false,
   toast: '',
   fare: 23.00,
+  trackIndex: 0,
 };
 
 const statusLabels = {
@@ -411,10 +445,28 @@ function setPlaying(on) {
   }
 
   document.querySelector('.home-shell')?.classList.toggle('sound-on', on);
-  button.setAttribute('aria-label', on ? 'Pause Ei Poth Jodi Na Shesh Hoy' : 'Play Ei Poth Jodi Na Shesh Hoy');
+  const track = tracks[state.trackIndex];
+  button.setAttribute('aria-label', `${on ? 'Pause' : 'Play'} ${track.title}`);
   button.title = on ? 'Pause song' : 'Play song';
   radioButton?.classList.toggle('is-on', on);
   radioButton?.setAttribute('aria-label', on ? 'Pause Radio Kolkata' : 'Play Radio Kolkata');
+}
+
+function loadTrack(index) {
+  state.trackIndex = (index + tracks.length) % tracks.length;
+  const track = tracks[state.trackIndex];
+  const title = document.querySelector('.track-card p');
+  const artist = document.querySelector('.track-card span');
+  const playButton = document.querySelector('[data-action="play"]');
+
+  if (title) title.textContent = track.title;
+  if (artist) artist.textContent = track.artist;
+  playButton?.setAttribute('aria-label', `${state.playing ? 'Pause' : 'Play'} ${track.title}`);
+
+  if (youtubePlayer?.loadVideoById) {
+    if (state.playing) youtubePlayer.loadVideoById(track.videoId);
+    else youtubePlayer.cueVideoById(track.videoId);
+  }
 }
 
 function loadYouTubeApi() {
@@ -442,7 +494,7 @@ async function initSongPlayer() {
   youtubePlayer = new YT.Player('youtube-song', {
     width: 640,
     height: 360,
-    videoId: songVideoId,
+    videoId: tracks[state.trackIndex].videoId,
     playerVars: {
       controls: 0,
       disablekb: 1,
@@ -456,6 +508,13 @@ async function initSongPlayer() {
         button.disabled = false;
         button.title = state.playing ? 'Pause song' : 'Play song';
       },
+      onStateChange: event => {
+        if (event.data === YT.PlayerState.ENDED) loadTrack(state.trackIndex + 1);
+      },
+      onError: () => {
+        // skip unembeddable or unavailable tracks silently
+        loadTrack(state.trackIndex + 1);
+      },
     },
   });
 }
@@ -468,13 +527,6 @@ function toggleRain() {
 
 function toggleRadio() {
   setPlaying(!state.playing);
-}
-
-function seekSong(seconds) {
-  if (!youtubePlayer?.getCurrentTime || !youtubePlayer?.seekTo) return;
-  const duration = youtubePlayer.getDuration?.() || Infinity;
-  const target = Math.max(0, Math.min(duration, youtubePlayer.getCurrentTime() + seconds));
-  youtubePlayer.seekTo(target, true);
 }
 
 function openDrawer(name) { state.drawer = name; render(); }
@@ -495,6 +547,7 @@ function render() {
   }
 
   const c = state.cab;
+  const track = tracks[state.trackIndex];
 
   app.innerHTML = `
     <main class="home-shell ${state.playing ? 'sound-on' : ''}">
@@ -511,8 +564,8 @@ function render() {
         </header>
 
         <div class="track-card" aria-live="polite">
-          <p>Ei Poth Jodi Na Shesh Hoy</p>
-          <span>Hemanta Mukherjee &amp; Sandhya Mukherjee</span>
+          <p>${esc(track.title)}</p>
+          <span>${esc(track.artist)}</span>
         </div>
 
         <div class="audio-embed" aria-hidden="true">
@@ -520,9 +573,9 @@ function render() {
         </div>
 
         <nav class="hero-controls" aria-label="Ride controls">
-          <button data-action="song-prev" aria-label="Rewind 10 seconds" title="Rewind 10 seconds">◀</button>
-          <button data-action="play" class="sound-toggle" aria-label="Play Ei Poth Jodi Na Shesh Hoy" title="Play song"><span></span></button>
-          <button data-action="song-next" aria-label="Forward 10 seconds" title="Forward 10 seconds">▶</button>
+          <button data-action="song-prev" aria-label="Previous song" title="Previous song">◀</button>
+          <button data-action="play" class="sound-toggle" aria-label="${state.playing ? 'Pause' : 'Play'} ${esc(track.title)}" title="${state.playing ? 'Pause' : 'Play'} song"><span></span></button>
+          <button data-action="song-next" aria-label="Next song" title="Next song">▶</button>
         </nav>
 
         <footer class="hero-footer">
@@ -705,8 +758,8 @@ app.addEventListener('click', async event => {
   switch(action) {
     case 'enter': enter(); break;
     case 'play': setPlaying(!state.playing); break;
-    case 'song-prev': seekSong(-10); break;
-    case 'song-next': seekSong(10); break;
+    case 'song-prev': loadTrack(state.trackIndex - 1); break;
+    case 'song-next': loadTrack(state.trackIndex + 1); break;
     case 'next': await nextCab(1); break;
     case 'prev': await nextCab(-1); break;
     case 'shuffle': await nextCab(1, true); break;
