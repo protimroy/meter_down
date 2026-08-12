@@ -558,7 +558,7 @@ function render() {
     <main class="home-shell ${state.playing ? 'sound-on' : ''}">
       <section class="motion-hero" aria-label="View from inside a Kolkata Ambassador taxi">
         <div class="hero-media" aria-hidden="true">
-          <video class="hero-video" src="${heroVideoSrc}" poster="${assetBase}howrah-ride.webp" muted playsinline preload="auto"></video>
+          <video class="hero-video" src="${heroVideoSrc}" muted playsinline preload="auto"></video>
           <video class="hero-video" src="${heroVideoSrc}" muted playsinline preload="auto"></video>
           <div class="hero-shade"></div>
         </div>
