@@ -365,6 +365,7 @@ function startHeroLoop() {
   const generation = ++heroLoopGeneration;
   const videos = [...document.querySelectorAll('.hero-video')];
   if (videos.length !== 2) return;
+  const crossfadeDuration = 1200;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   videos[0].classList.add('is-active');
@@ -383,23 +384,27 @@ function startHeroLoop() {
 
   const scheduleCrossfade = video => {
     const duration = Number.isFinite(video.duration) ? video.duration : 7.1;
-    const remaining = Math.max(0.4, duration - video.currentTime - 0.7);
+    const remaining = Math.max(0.4, duration - video.currentTime - crossfadeDuration / 1000);
     queue(() => {
       const nextIndex = activeIndex === 0 ? 1 : 0;
       const current = videos[activeIndex];
       const next = videos[nextIndex];
       next.currentTime = 0;
-      next.play().catch(() => {});
-      requestAnimationFrame(() => next.classList.add('is-entering'));
-      queue(() => {
-        current.pause();
-        current.currentTime = 0;
-        current.classList.remove('is-active');
-        next.classList.remove('is-entering');
-        next.classList.add('is-active');
-        activeIndex = nextIndex;
-        scheduleCrossfade(next);
-      }, 720);
+      const beginCrossfade = () => {
+        if (generation !== heroLoopGeneration) return;
+        next.getBoundingClientRect();
+        requestAnimationFrame(() => next.classList.add('is-entering'));
+        queue(() => {
+          current.pause();
+          current.currentTime = 0;
+          current.classList.remove('is-active');
+          next.classList.remove('is-entering');
+          next.classList.add('is-active');
+          activeIndex = nextIndex;
+          scheduleCrossfade(next);
+        }, crossfadeDuration);
+      };
+      next.play().then(beginCrossfade, beginCrossfade);
     }, remaining * 1000);
   };
 

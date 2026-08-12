@@ -74,7 +74,7 @@ The repository includes [`.github/workflows/deploy-pages.yml`](.github/workflows
 1. Push this repository to GitHub.
 2. Open **Settings > Pages** in the repository.
 3. Set **Source** to **GitHub Actions**.
-4. Push to `main`, or run **Deploy GitHub Pages** from the Actions tab.
+4. Push to `master`, or run **Deploy GitHub Pages** from the Actions tab.
 5. Wait for the deployment job to complete.
 
 The default URL will be:

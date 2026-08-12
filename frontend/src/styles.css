@@ -80,3 +80,4 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .audio-embed{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}.audio-embed iframe{display:block;width:640px;height:360px;border:0}
 .sound-toggle:disabled{cursor:wait;opacity:.45}
 .hero-controls{grid-template-columns:44px 44px 44px}.riding-count{font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.18em;text-shadow:0 2px 15px #000}
+.hero-video{transition-duration:1.2s}
